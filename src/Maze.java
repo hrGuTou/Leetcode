@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Maze {
     static final int[][] directions = {{-1,0},{1,0},{0,-1},{0,1}};
@@ -13,8 +15,36 @@ public class Maze {
         int[] destination = {4,4};
 
         System.out.println(mazeSolve(grid, start, destination));
+        //System.out.println(bfsSolver(grid, start, destination));
        // System.out.println(Arrays.toString(grid));
     }
+
+    static boolean bfsSolver(int[][] grid, int[] pos, int[] dest){
+        Queue<int[]> q = new LinkedList<>();
+        boolean[][] visited = new boolean[grid.length][grid[0].length];
+
+        visited[pos[0]][pos[1]] = true;
+
+        q.offer(pos);
+        while(!q.isEmpty()){
+            int[] cur = q.peek();
+            if(cur[0]==dest[0] && cur[1]==dest[1]) return true;
+            q.poll();
+            for(int[] dir: directions) {
+                int newX = cur[0] + dir[0];
+                int newY = cur[1] + dir[1];
+
+                if (isValid(grid, newX, newY) && !visited[newX][newY]) {
+                    visited[newX][newY] = true;
+                    q.offer(new int[]{newX, newY});
+                }
+
+            }
+        }
+
+        return false;
+    }
+
 
     static boolean mazeSolve(int[][] grid, int[] pos, int[] destination){ //dfs
         //int r = grid.length;
@@ -45,10 +75,6 @@ public class Maze {
     }
 
     static boolean isValid(int[][]grid, int x, int y){
-        if(x>=0 && y>=0 && x<grid.length && y<grid[0].length && grid[x][y]==0){
-            return true;
-        }else{
-            return false;
-        }
+        return x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && grid[x][y] == 0;
     }
 }
